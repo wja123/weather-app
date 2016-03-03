@@ -15,6 +15,9 @@ var latestData = {};
 var latestForecastData ={};
 
 $(function(){
+
+  $('.dropdown-toggle').dropdown();
+
   checkLocalStorage();
   var curTime = new Date();
   var time = curTime.getTime();
@@ -52,11 +55,13 @@ $(function(){
     updatedCurrentPosition(position.coords.latitude, position.coords.longitude);
   });
 
-  $(".rec-query-add").click(function(e){
+  $(document).on("click",".recent-name",function(e){
     console.log("click");
     e.stopPropagation;
-    var inpVal=$(this).find(".current-city").val();
-    console.log(inpVal);
+    console.log($(this));
+    lastCity =$(this)[0].innerHTML.toLowerCase();
+    dataUpdate(lastCity);
+    queryCurrentWeather();
   });
 
 });
@@ -72,6 +77,7 @@ function inputHandler(e){
   e.preventDefault();
   lastCity = $('#city-input').val();
   queryCurrentWeather();
+  queryRecentWeather();
 }
 
 function dataUpdate(cityinput){
@@ -122,7 +128,7 @@ function updateCurrentWeatherWidget(inpObj){
   $(".current-weather").text(capFirst(inpObj.weather[0].description));
   $("#current-icon").attr("src",iconURL + inpObj.weather[0].icon + ".png");
   $(".current-temp").text(kelvinConversion(inpObj.main.temp,units) + ",");
-  queryForecastWeather(capFirst(inpObj.name)); ////REMOVE THIS AFTER TESTING
+  queryForecastWeather(capFirst(inpObj.name));
 }
 
 function capFirst(inpVal){
