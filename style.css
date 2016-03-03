@@ -1,0 +1,74 @@
+.jumbotron {
+    margin-bottom: 0px;
+    background-image: url("https://c2.staticflickr.com/8/7282/9263924434_aba98b6249_b.jpg");
+    /*background-image: url("http://il4.picdn.net/shutterstock/videos/7536658/thumb/1.jpg");*/
+
+
+    background-position: 0% 25%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: white;
+    text-shadow: black 0.3em 0.3em 0.3em;
+}
+
+.navbar {
+    margin-bottom: 0;
+    background-color: black;
+    border-color: black;
+    border-radius: 0px;
+}
+
+.for-widgcol{
+    font-weight: bold;
+    text-align: left;
+}
+
+#forecast-widget-template{
+    display:none;
+}
+
+.jumbotron{
+    height:350px;
+}
+
+td{
+    height:50px;
+    text-align: right;
+}
+
+table{
+    vertical-align: middle;
+    width:100%;
+
+}
+
+thead{
+    font-weight: bold;
+    text-align: left;
+}
+
+tr{
+    text-align: center;
+    width:100%;
+}
+
+.widg-icon-row{
+    text-align: center;
+}
+
+.forecast-value{
+    text-align: center;
+}
+
+.widg-descrip{
+    font-weight: bold;
+}
+
+.recent-queries{
+    height:150px;
+    background-color: black;
+}
+
+#recent-template{
+    display:none;
+}
