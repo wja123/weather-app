@@ -16,8 +16,6 @@ var latestForecastData ={};
 
 $(function(){
 
-  $('.dropdown-toggle').dropdown();
-
   checkLocalStorage();
   var curTime = new Date();
   var time = curTime.getTime();
@@ -42,7 +40,7 @@ $(function(){
     console.log(units);
     if(latestData !== {}){
       updateCurrentWeatherWidget(latestData);
-            updateForecastWeatherWidget(latestForecastData);
+      updateForecastWeatherWidget(latestForecastData);
     }
   });
 
@@ -57,18 +55,30 @@ $(function(){
     updatedCurrentPosition(position.coords.latitude, position.coords.longitude);
   });
 
-  $(".recent-queries").on("click",".recent-name",function(e){
-    console.log("click");
-    e.stopPropagation;
-    console.log($(this));
-    var inpVal=$(this)[0].innerText.toLowerCase();
-    lastCity=inpVal;
-    queryCurrentWeather(); ////RECENTLY ADDED
-    console.log(inpVal);
-  });
+  $(".recent-queries").on("click",".recent-name",recentClick);
+  $(".recent-queries").on("click",".remove-recent",removeRecent);
 
 });
 
+
+function recentClick(e){
+  console.log("click");
+  e.stopPropagation;
+  console.log($(this));
+  var inpVal=$(this)[0].innerText.toLowerCase();
+  lastCity=inpVal;
+  queryCurrentWeather();
+  console.log(inpVal);
+}
+
+function removeRecent(e){
+  console.log("click");
+  e.stopPropagation;
+  var inpVal=$(this).closest($(".rec-query-add")).find(".recent-name")[0].innerText.toLowerCase();
+  console.log(inpVal);
+  deleteRecent(inpVal);
+  queryRecentWeather();
+}
 
 function updatedCurrentPosition(lat,long){
   curLat = lat;
@@ -133,7 +143,7 @@ function updateCurrentWeatherWidget(inpObj){
 }
 
 function capFirst(inpVal){
-  return inpVal.slice(0,1).toUpperCase()+inpVal.slice(1).toLowerCase();
+  return inpVal.slice(0, 1).toUpperCase()+inpVal.slice(1).toLowerCase();
 }
 
 function stringCapFirst(inpVal){
@@ -153,16 +163,16 @@ function kelvinConversion(value,units){
 
 function queryCurrentWeather(){
   $.ajax({method:"GET",
-    url:curUrlString+"&q=" + lastCity +"&lat=" + curLat +"&lon=" +curLong,
+    url:curUrlString + "&q=" + lastCity + "&lat=" + curLat + "&lon=" + curLong,
     success:function(data){
       console.log(data);
       latestData=data;
       lastCity=data.name;
+
       if(cityIds.indexOf(data.id) === -1){
         cityIds.unshift(data.id);
       }
 
-      console.log(data.id);
       curLat="";
       curLong=""; 
       updateCurrentWeatherWidget(data);
@@ -175,7 +185,6 @@ function queryForecastWeather(cityinput){
     success:function(data){
       console.log(data);
       latestForecastData=data;
-      console.log(data.id);
       curLat="";
       curLong=""; 
       updateForecastWeatherWidget(data);
@@ -186,9 +195,7 @@ function queryRecentWeather(){
   $.ajax({method:"GET",
     url: '//api.openweathermap.org/data/2.5/group?appid=' + appID + '&id=' + cityIds.join(","),
     success:function(data){
-      console.log(data);
       latestForecastData=data;
-      console.log(data.id);
       curLat="";
       curLong=""; 
       updateRecentWidgets(data);
@@ -237,9 +244,16 @@ function updateRecentWidgets(inpData){
 }
 
 function getDate(inpTime){
-  console.log(inpTime);
   var retDate = new Date(inpTime);
   return retDate.toString();
+}
+
+function deleteRecent(inpVal){
+  var index = cities.indexOf(inpVal.toLowerCase());
+  console.log(index);
+  cities.splice(index,1);
+  cityIds.splice(index,1);
+  updateLocalStorage();
 }
 
 
