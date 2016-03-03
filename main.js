@@ -32,6 +32,7 @@ $(function(){
     console.log(units);
     if(latestData !== {}){
       updateCurrentWeatherWidget(latestData);
+      updateForecastWeatherWidget(latestForecastData);
     }
   });
 
@@ -41,6 +42,7 @@ $(function(){
     console.log(units);
     if(latestData !== {}){
       updateCurrentWeatherWidget(latestData);
+            updateForecastWeatherWidget(latestForecastData);
     }
   });
 
@@ -55,13 +57,14 @@ $(function(){
     updatedCurrentPosition(position.coords.latitude, position.coords.longitude);
   });
 
-  $(document).on("click",".recent-name",function(e){
+  $(".recent-queries").on("click",".recent-name",function(e){
     console.log("click");
     e.stopPropagation;
     console.log($(this));
-    lastCity =$(this)[0].innerHTML.toLowerCase();
-    dataUpdate(lastCity);
-    queryCurrentWeather();
+    var inpVal=$(this)[0].innerText.toLowerCase();
+    lastCity=inpVal;
+    queryCurrentWeather(); ////RECENTLY ADDED
+    console.log(inpVal);
   });
 
 });
@@ -77,14 +80,12 @@ function inputHandler(e){
   e.preventDefault();
   lastCity = $('#city-input').val();
   queryCurrentWeather();
-  queryRecentWeather();
 }
 
 function dataUpdate(cityinput){
   var cityIdMove="";
   if(cityinput){
     if(cities.indexOf(cityinput.toLowerCase()) > -1){
-      cityIds.shift(0,1);
       var indexCity = cities.indexOf(cityinput.toLowerCase());
       cityIdMove = cityIds[indexCity];
       console.log(cityIdMove);
@@ -128,7 +129,7 @@ function updateCurrentWeatherWidget(inpObj){
   $(".current-weather").text(capFirst(inpObj.weather[0].description));
   $("#current-icon").attr("src",iconURL + inpObj.weather[0].icon + ".png");
   $(".current-temp").text(kelvinConversion(inpObj.main.temp,units) + ",");
-  queryForecastWeather(capFirst(inpObj.name));
+  queryForecastWeather(capFirst(inpObj.name)); ////REMOVE THIS AFTER TESTING
 }
 
 function capFirst(inpVal){
@@ -157,7 +158,10 @@ function queryCurrentWeather(){
       console.log(data);
       latestData=data;
       lastCity=data.name;
-      cityIds.unshift(data.id);
+      if(cityIds.indexOf(data.id) === -1){
+        cityIds.unshift(data.id);
+      }
+
       console.log(data.id);
       curLat="";
       curLong=""; 
@@ -224,9 +228,9 @@ function updateRecentWidgets(inpData){
     $recWidg.removeAttr("id");
     $recWidg.addClass("rec-query-add");
     $recWidg.find(".recent-name").text(inpData.list[i].name);
-    $recWidg.find(".recent-temp").text(kelvinConversion(inpData.list[i].main.temp));
-    $recWidg.find(".recent-hum").text(kelvinConversion(inpData.list[i].main.humidity));
-    $recWidg.find(".recent-press").text(kelvinConversion(inpData.list[i].main.pressure));
+    $recWidg.find(".recent-temp").text(kelvinConversion(inpData.list[i].main.temp,units));
+    $recWidg.find(".recent-hum").text(kelvinConversion(inpData.list[i].main.humidity,units));
+    $recWidg.find(".recent-press").text(kelvinConversion(inpData.list[i].main.pressure,units));
     $recWidg.show();
     $recQuer.append($recWidg);
   }
